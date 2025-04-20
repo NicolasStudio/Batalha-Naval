@@ -1,15 +1,16 @@
 const grid = document.querySelector('.grid');
 
+let primeiraCard = '';
+let vida = 5;
+let pontos = 0;
+let pontosTotais = 0;
+
+
 const createElement = (tag, className) => {
     const element = document.createElement(tag);
     element.className = className;
     return element;
 };
-
-let primeiraCard = '';
-let vida = 5;
-let pontos = 0;
-let pontosTotais = 0;
 
 const checkEndGame = () => {
     const disabledCards = document.querySelectorAll('.disabled-card');
@@ -22,6 +23,12 @@ const checkEndGame = () => {
                 alert('Parabéns, você venceu!');
             }
             alert('O seu total de pontos é: ' + pontosTotais);
+
+            setTimeout(() => {
+                location.reload();
+            }, 800); // Aguarda 0.4s antes de recarregar
+
+            
         }, 700);
     }
 };
@@ -30,7 +37,6 @@ const checkCards = () => {
     const tipo = primeiraCard.getAttribute('data-personagens');
 
     const pontuacoes = {
-        'Bomba': () => { vida--; },
         'Submarino': 180,
         'Rebocador': 130,
         'Cruzador': 90,
@@ -39,17 +45,22 @@ const checkCards = () => {
     };
 
     if (tipo === 'Bomba') {
-        pontosTotais = pontos;
+        // Só subtrai se ainda tiver vida
+        if (vida > 0) {
+            vida--;
+        }
     } else {
         for (const chave in pontuacoes) {
             if (tipo.includes(chave)) {
                 pontos += pontuacoes[chave];
-                pontosTotais = pontos;
                 break;
             }
         }
     }
 
+    pontosTotais = pontos;
+
+    // Atualiza o HUD
     document.getElementById("pontos").innerHTML = "Pontos: " + pontosTotais;
     document.getElementById("vida").innerHTML = "Vidas: " + vida;
 
@@ -96,13 +107,13 @@ const loadGame = () => {
     };
 
     // Adiciona os blocos
-    adicionarBlocos(12, ['Agua'], 1);
-    adicionarBlocos(7, ['Bomba'], 1);
+    adicionarBlocos(7, ['Agua'], 1);
+    adicionarBlocos(17, ['Bomba'], 1);
     adicionarBlocos(5, ['Submarino'], 1);
     adicionarBlocos(3, ['Rebocador(1)', 'Rebocador(2)'], 2);
     adicionarBlocos(2, ['Cruzador(1)', 'Cruzador(2)', 'Cruzador(3)'], 3);
     adicionarBlocos(1, ['Encouraçado(1)', 'Encouraçado(2)', 'Encouraçado(3)', 'Encouraçado(4)'], 4);
-    adicionarBlocos(2, ['PortaAviões(1)', 'PortaAviões(2)', 'PortaAviões(3)', 'PortaAviões(4)', 'PortaAviões(5)'], 5);
+    adicionarBlocos(1, ['PortaAviões(1)', 'PortaAviões(2)', 'PortaAviões(3)', 'PortaAviões(4)', 'PortaAviões(5)'], 5);
 
     const totalColunas = 10;
     let linhaAtual = [];
